@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>My Surprise Letter</title>
+  <style>
+    :root{
+      --bg1:#0a472a;
+      --bg2:#1a6b3f;
+      --accent:#c41e3a;
+      --gold:#ffd700;
+      --muted:#888;
+      --card:#f5f5f5;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    html,body{
+      height:100%;
+      margin:0
+    }
+    a{
+      text-decoration: none;
+    }
+    body{
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      box-sizing:border-box;
+      overflow:hidden;
+    }
+
+    /* Intro Animation Styles */
+    .intro-screen {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #c41e3a, #0a472a);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      cursor: pointer;
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    
+    .intro-screen.hide {
+      opacity: 0;
+      transform: scale(1.2);
+      pointer-events: none;
+    }
+
+    .intro-content {
+      text-align: center;
+      animation: fadeInUp 1.2s ease;
+    }
+
+    .intro-title {
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: var(--gold);
+      text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      margin: 0 0 20px 0;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .intro-subtitle {
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.95);
+      margin-top: 20px;
+      animation: blink 1.5s ease-in-out infinite;
+    }
+
+    .floating-items {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .floating-item {
+      position: absolute;
+      font-size: 3rem;
+      animation: floatUp 6s ease-in infinite;
+      opacity: 0;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
+    @keyframes blink {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.6;
+      }
+    }
+
+    .back-btn {
+      display: inline-block;
+      text-decoration: none;
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--gold);
+      margin: 12px;
+      transition: transform 0.2s ease, color 0.3s ease;
+    }
+
+    .back-btn:hover {
+      color: white;
+      transform: translateX(-4px);
+    }
+
+    .scene{
+      max-width:920px;
+      width:100%;
+      position:relative;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
+    }
+
+    .scene.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .card{
+      background: linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%);
+      backdrop-filter:blur(6px);
+      border-radius:18px;
+      padding:36px;
+      box-shadow:0 12px 40px rgba(0,0,0,0.2);
+      border: 3px solid var(--accent);
+      transform:translateY(0);
+      transition:transform .45s ease;
+      overflow:hidden;
+      position: relative;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: repeating-linear-gradient(90deg, var(--accent) 0px, var(--accent) 10px, var(--gold) 10px, var(--gold) 20px);
+    }
+
+    .header{
+      display:flex;
+      align-items:center;
+      gap:16px
+    }
+
+    .snowman {
+      width:80px;
+      height:80px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background: white;
+      border: 3px solid var(--accent);
+      box-shadow:0 6px 18px rgba(196,30,58,0.3);
+      color: var(--accent);
+      font-weight:700;
+      font-size:40px
+    }
+
+    h1{
+      margin:0;
+      font-size:28px;
+      color:var(--accent);
+      font-weight: 800;
+    }
+    p.lead{
+      margin:6px 0 0;
+      color:var(--muted)
+    }
+
+    .typewriter{
+      margin-top:18px;
+      font-size:18px;
+      color:#333;
+      min-height:62px
+    }
+
+    .controls{
+      display:flex;
+      gap:12px;
+      margin-top:22px
+    }
+    button{
+      background:linear-gradient(90deg,var(--accent),#a01530);
+      border:0;
+      padding:12px 18px;
+      border-radius:12px;
+      color:white;
+      font-weight:600;
+      cursor:pointer;
+      box-shadow:0 8px 20px rgba(196,30,58,0.3);
+    }
+    button.secondary{
+      background:transparent;
+      color:var(--accent);
+      border:2px solid var(--accent)
+    }
+
+    .letter-wrap{
+      margin-top:18px;
+      border-radius:12px;
+      padding:20px;
+      background: linear-gradient(135deg, #fff9e6 0%, #fffef0 100%);
+      border: 2px solid var(--gold);
+      box-shadow:inset 0 2px 8px rgba(255,215,0,0.2);
+      max-height:420px;
+      overflow:auto
+    }
+    .hidden{
+      display:none
+    }
+    .letter{
+      font-size:16px;
+      line-height:1.8;
+      color:#222;
+      padding:8px 4px;
+      text-align: justify;
+      text-justify: inter-word
+    }
+    .signature{
+      margin-top:18px;
+      font-weight:700;
+      color:var(--accent);
+      font-size:18px
+    }
+
+    #confetti{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:40
+    }
+
+    @media (max-width:640px){
+      .intro-title {
+        font-size: 2rem;
+      }
+      .card{
+        padding:18px;
+        border-radius:14px
+      }
+      .snowman{
+        width:64px;
+        height:64px;
+        font-size:32px
+      }
+      h1{
+        font-size:18px
+      }
+    }
+
+    @media print{
+      body{
+        background:white
+      }
+      #confetti, .controls, audio, .intro-screen{
+        display:none
+      }
+      .card{
+        box-shadow:none
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Intro Animation Screen -->
+  <div class="intro-screen" id="intro-screen">
+    <div class="floating-items" id="floating-items"></div>
+    <div class="intro-content">
+      <h1 class="intro-title">🎄 Merry Christmas Love 🎄</h1>
+      <p class="intro-subtitle">✨ Tuplokag bisan asa love ✨</p>
+    </div>
+  </div>
+
+  <canvas id="confetti"></canvas>
+  <div class="scene" id="scene">
+    <div class="card" role="main">
+      <div class="header">
+        <div class="snowman">⛄</div>
+        <div>
+          <h1>Love Merry Christmas!!</h1>
+          <p class="lead"></p>
+        </div>
+      </div>
+
+      <div class="typewriter" id="typewriter"></div>
+
+      <div class="letter-wrap" id="letter-wrap">
+        <div class="letter" id="letter-content">
+          love Gusto lang ko magpasalamat nga niabot ka sa akong kinabuhi. Ikaw ang pinakanindot nga gift nga akong nadawat sa akong kinabuhi, ug 
+          mapasalamaton kaayo ko sa gugma, kalipay, kasakit, ug kusog nga imong gihatag kanako. Gusto nako nga mahibal-an nimo nga imoha ra gyud ang 
+          akong kasing-kasing sa kanunay. Ang akong pinakadako nga pangandoy mao ang pagpadayon sa paghimo og tibuok kinabuhi nga nindot nga mga 
+          handumanan uban kanimo. Ikaw gyud ang rason ngano nga mopadayon ko sa pagpaningkamot ahaha si mama pod diay aypag buot charing hehehe. Gihigugma kaayo tika.
+          <br>
+          <br>ilove you🤗😘
+        </div>
+        <div class="signature">From: Nads 🎅❤️</div>
+      </div>
+
+      <audio id="bg-music" loop></audio>
+    </div>
+  </div>
+
+  <script>
+    // Create floating Christmas items
+    function createFloatingItems() {
+      const container = document.getElementById('floating-items');
+      const items = ['🎄', '⛄', '🎅', '🎁', '❄️', '⛸️', '🔔', '🕯️'];
+      
+      for (let i = 0; i < 20; i++) {
+        const item = document.createElement('div');
+        item.className = 'floating-item';
+        item.textContent = items[Math.floor(Math.random() * items.length)];
+        item.style.left = Math.random() * 100 + '%';
+        item.style.animationDelay = Math.random() * 4 + 's';
+        item.style.animationDuration = (Math.random() * 3 + 4) + 's';
+        container.appendChild(item);
+      }
+    }
+
+    // Handle intro screen click
+    const introScreen = document.getElementById('intro-screen');
+    const scene = document.getElementById('scene');
+
+    introScreen.addEventListener('click', () => {
+      introScreen.classList.add('hide');
+      scene.classList.add('show');
+      setTimeout(() => {
+        introScreen.style.display = 'none';
+      }, 800);
+    });
+
+    // Initialize floating items
+    createFloatingItems();
+
+    // Typewriter text
+    const typeEl = document.getElementById('typewriter');
+    const lines = [
+      "Love naa ko surprise",
+    ];
+    let li = 0, ci = 0, forward = true;
+    function typeStep(){
+      const txt = lines[li];
+      if(forward){
+        ci++;
+        typeEl.textContent = txt.slice(0,ci) + (ci%2? '\u258C':'');
+        if(ci>=txt.length){ forward=false; setTimeout(typeStep,700); return; }
+        setTimeout(typeStep,40 + Math.random()*40);
+      } else {
+        typeEl.textContent = txt;
+      }
+    }
+    
+    // Start typewriter after intro
+    setTimeout(() => {
+      if (!introScreen.classList.contains('hide')) {
+        setTimeout(typeStep, 1000);
+      } else {
+        typeStep();
+      }
+    }, 100);
+
+    // Auto show letter and start confetti after intro
+    const letterWrap = document.getElementById('letter-wrap');
+    const confettiCanvas = document.getElementById('confetti');
+    
+    // Show letter automatically after intro animation
+    setTimeout(() => {
+      typeEl.style.display = 'none';
+      startConfetti();
+    }, 1000);
+
+    // Simple confetti engine (now with Christmas colors and shapes)
+    let confettiCtx, confettiPieces = [], confettiRAF = null;
+    function setupConfetti(){
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+      confettiCtx = confettiCanvas.getContext('2d');
+    }
+    function random(min,max){return Math.random()*(max-min)+min}
+    function ConfettiPiece(){
+      this.x = random(0,confettiCanvas.width);
+      this.y = random(-confettiCanvas.height*0.5,0);
+      this.size = random(6,14);
+      this.speed = random(1,5);
+      this.angle = random(0,Math.PI*2);
+      this.spin = random(-0.1,0.1);
+      const palette = ['#c41e3a','#0a472a','#ffd700','#ffffff','#ff6b35'];
+      this.color = palette[Math.floor(random(0,palette.length))];
+      this.tilt = random(-0.5,0.5);
+    }
+    ConfettiPiece.prototype.update = function(){
+      this.y += this.speed;
+      this.x += Math.sin(this.angle)*1.5;
+      this.angle += this.spin;
+      this.tilt += 0.02;
+      if(this.y > confettiCanvas.height + 40){
+        this.y = -10; this.x = random(0,confettiCanvas.width);
+      }
+    }
+    ConfettiPiece.prototype.draw = function(ctx){
+      ctx.save();
+      ctx.translate(this.x,this.y);
+      ctx.rotate(this.angle);
+      ctx.fillStyle = this.color;
+      ctx.fillRect(-this.size/2 + Math.sin(this.tilt)*4, -this.size/2, this.size, this.size*0.6);
+      ctx.restore();
+    }
+
+    function startConfetti(){
+      if(confettiRAF) return;
+      confettiPieces = [];
+      for(let i=0;i<120;i++) confettiPieces.push(new ConfettiPiece());
+      function frame(){
+        confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+        for(const p of confettiPieces){p.update();p.draw(confettiCtx)}
+        confettiRAF = requestAnimationFrame(frame);
+      }
+      frame();
+    }
+    function stopConfetti(){ 
+      if(confettiRAF){ 
+        cancelAnimationFrame(confettiRAF); 
+        confettiRAF=null; 
+        confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+      } 
+    }
+
+    window.addEventListener('resize', ()=>{ setupConfetti(); });
+    setupConfetti();
+  </script>
+</body>
+</html>
